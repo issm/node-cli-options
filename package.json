@@ -1,0 +1,12 @@
+{
+  "name": "cli-options",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "repository": "git@gitlab.com:issm/node-cli-base.git",
+  "author": "issm <issmxx@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "camel-case": "3.0.0",
+    "commander": "^4.1.1"
+  }
+}
