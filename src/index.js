@@ -11,6 +11,7 @@ class CLIOptions {
   constructor (params = {}) {
     const c = this._createCommander(params)
     this._applyOptions(c)
+    this._applyArgs(c)
   }
 
   _createCommander ({ version, usage, options = [] }){
@@ -18,9 +19,11 @@ class CLIOptions {
     if (version) c.version(version)
     if (usage) c.usage(usage)
     options.forEach(opt => {
-      const { def, type, description = '' } = opt
+      const { def, type, required, description = '' } = opt
       const converter = this._optionConverter(type)
-      c.option(def, description, converter)
+      required
+        ? c.requiredOption(def, description, converter)
+        : c.option(def, description, converter)
     })
     c.parse(process.argv)
     return c
@@ -57,6 +60,11 @@ class CLIOptions {
       keys.push(kcc)
     })
     Object.defineProperty(this, 'keys', { get: () => keys })
+  }
+
+  // `args` プロパティを，引数リストを取得するための getter として適用する
+  _applyArgs (c) {
+    Object.defineProperty(this, 'args', { get: () => c.args })
   }
 
   // オプション情報をまるごと返す
