@@ -4,7 +4,7 @@
 
 # Usage
 
-```
+```js
 const CLIOptions = require('cli-options')
 
 const options = new CLIOptions({
