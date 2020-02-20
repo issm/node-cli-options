@@ -93,9 +93,10 @@ class CLIOptions {
   _validate (c, optionDefs) {
     const schema = this._constructValidationSchema(c, optionDefs)
 
-    // `--show-validation-schema` オプション指定時，スキーマを表示して終了
+    // `--show-validation-schema` オプション指定時，スキーマを表示してプロセスを終了する
     if (this.showValidationSchema) {
       console.log(util.inspect(schema, { depth: 10, colors: true }))
+      process.exit(0)
       return
     }
 
