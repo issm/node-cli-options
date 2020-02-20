@@ -6,6 +6,7 @@
   "author": "issm <issmxx@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "ajv": "^6.11.0",
     "camel-case": "3.0.0",
     "commander": "^4.1.1"
   }
