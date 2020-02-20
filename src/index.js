@@ -118,7 +118,6 @@ class CLIOptions {
       const { flags, required, mandatory, long, short, description = '' } = opt
       const [ optionDef ] = optionDefs.filter(od => od.def === flags)
       // optionDef が未定義であれば，commander によって追加されたオプションであるので，スキップする
-      if (!optionDef) console.log(opt)
       if (!optionDef) return
 
       // オプション名
