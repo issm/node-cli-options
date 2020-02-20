@@ -8,9 +8,12 @@ async function main () {
       { def: '-r, --required <v>', required: true, description: 'required option' },
       { def: '-f, --flag', description: 'boolean `flag`' },
       { def: '-s, --string <v>', description: 'string `string`' },
+      { def: '-t, --patterned-string <v>', pattern: '^.{4}$', description: 'patterned string' },
       { def: '-i, --int <v>', type: 'integer', description: 'integer `int`' },
+      { def: '-j, --patterned-int <v>', pattern: '^[123]$', description: 'patterned integer' },
       { def: '-n, --number <v>', type: 'number', description: 'number `float`' },
       { def: '--ints <vs>', type: 'array:integer', description: 'array of integer `ints`' },
+      { def: '--patterned-ints <vs>', type: 'array:integer', pattern: '^[123]$', description: 'array of patterned integer' },
       { def: '--long-name <v>', type: 'string', description: 'only long-named option' }
     ]
   })

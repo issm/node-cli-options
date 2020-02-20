@@ -1,4 +1,6 @@
 const camelCase = require('camel-case')
+const util = require('util')
+const Ajv = require('ajv')
 
 const optionConverters = {
   'integer': v => parseInt(v, 10),
@@ -7,11 +9,18 @@ const optionConverters = {
   '_': v => v
 }
 
+const schemaTypeMap = {
+  'array:integer' (item = {}) {
+    return { type: 'array', items: { type: 'integer', ...item } }
+  }
+}
+
 class CLIOptions {
   constructor (params = {}) {
     const c = this._createCommander(params)
     this._applyOptions(c)
     this._applyArgs(c)
+    this._validate(c, params.options)
   }
 
   _createCommander ({ version, usage, options = [] }){
@@ -25,6 +34,10 @@ class CLIOptions {
         ? c.requiredOption(def, description, converter)
         : c.option(def, description, converter)
     })
+
+    // 独自オプション
+    c.option('--show-validation-schema', 'バリデーションのための JSON Schema を表示して終了する')
+
     c.parse(process.argv)
     return c
   }
@@ -74,6 +87,68 @@ class CLIOptions {
       options[ k ] = this[ k ]
     })
     return options
+  }
+
+  // 自身のバリデーションを行う
+  _validate (c, optionDefs) {
+    const schema = this._constructValidationSchema(c, optionDefs)
+
+    // `--show-validation-schema` オプション指定時，スキーマを表示して終了
+    if (this.showValidationSchema) {
+      console.log(util.inspect(schema, { depth: 10, colors: true }))
+      return
+    }
+
+    const v = new Ajv()
+    const isValid = v.validate(schema, this.options)
+    if (!isValid) {
+      console.error(v.errors)
+      const err = new Error('Validation failure')
+      err.code = 'ValidationFailure'
+      err.errors = v.errors
+      throw err
+    }
+  }
+
+  _constructValidationSchema (c, optionDefs) {
+    // schema を組み立てる
+    const schemaRequired = []
+    const schemaProperties = {}
+    c.options.forEach(opt => {
+      const { flags, required, mandatory, long, short, description = '' } = opt
+      const [ optionDef ] = optionDefs.filter(od => od.def === flags)
+      // optionDef が未定義であれば，commander によって追加されたオプションであるので，スキップする
+      if (!optionDef) console.log(opt)
+      if (!optionDef) return
+
+      // オプション名
+      const name = camelCase((typeof long === 'undefined' ? short : long).replace(/^-+/, ''))
+
+      // schema.required[] に追加
+      if (mandatory) schemaRequired.push(name)
+
+      let { type, pattern } = optionDef
+      if (!type) {
+        // type が指定されていない場合，推測する
+        // opt.required は「そのオプションが値を必要とするかどうか」を意味するので，それを利用する
+        type = required ? 'string' : 'boolean'
+      }
+
+      // schema.properties に追加
+      let schemaProperty
+      if (schemaTypeMap[ type ]) {
+        schemaProperty = pattern
+          ? schemaTypeMap[ type ]({ pattern })
+          : schemaTypeMap[ type ]()
+      } else {
+        schemaProperty = pattern
+          ? { type, pattern, description }
+          : { type, description }
+      }
+      schemaProperties[ name ] = schemaProperty
+    })
+    const schema = { required: schemaRequired, properties: schemaProperties }
+    return schema
   }
 }
 
