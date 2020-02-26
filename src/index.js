@@ -28,11 +28,12 @@ class CLIOptions {
     if (version) c.version(version)
     if (usage) c.usage(usage)
     options.forEach(opt => {
-      const { def, type, required, description = '' } = opt
+      const { def, type, required, default: defaultValue, description = '' } = opt
       const converter = this._optionConverter(type)
-      required
-        ? c.requiredOption(def, description, converter)
-        : c.option(def, description, converter)
+      const optionMethod = required ? 'requiredOption' : 'option'
+      typeof defaultValue !== undefined
+        ? c[ optionMethod ](def, description, converter, defaultValue)
+        : c[ optionMethod ](def, description, converter)
     })
 
     // 独自オプション
