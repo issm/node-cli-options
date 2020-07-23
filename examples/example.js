@@ -14,6 +14,8 @@ async function main () {
       { def: '-n, --number <v>', type: 'number', description: 'number `float`' },
       { def: '--ints <vs>', type: 'array:integer', description: 'array of integer `ints`' },
       { def: '--patterned-ints <vs>', type: 'array:integer', pattern: '^[123]$', description: 'array of patterned integer' },
+      { def: '--strings <vs>', type: 'array:string', description: 'array of string `strings`' },
+      { def: '--patterned-strings <vs>', type: 'array:string', pattern: '^.{3}$', description: 'array of patterned string' },
       { def: '--long-name <v>', type: 'string', description: 'only long-named option' },
       { def: '--default-value <v>', type: 'integer', default: 50, description: 'has default value, if not specified' }
     ]

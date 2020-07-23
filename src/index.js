@@ -12,6 +12,9 @@ const optionConverters = {
 const schemaTypeMap = {
   'array:integer' (item = {}) {
     return { type: 'array', items: { type: 'integer', ...item } }
+  },
+  'array:string' (item = {}) {
+    return { type: 'array', items: { type: 'string', ...item } }
   }
 }
 

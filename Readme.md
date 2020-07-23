@@ -21,6 +21,8 @@ const options = new CLIOptions({
     { def: '-n, --number <v>', type: 'number', description: 'number `float`' },
     { def: '--ints <vs>', type: 'array:integer', description: 'array of integer `ints`' },
     { def: '--patterned-ints <vs>', type: 'array:integer', pattern: '^[123]$', description: 'array of patterned integer' },
+    { def: '--strings <vs>', type: 'array:string', description: 'array of string `strings`' },
+    { def: '--patterned-strings <vs>', type: 'array:string', pattern: '^.{3}$', description: 'array of patterned string' },
     { def: '--long-name <v>', type: 'string', description: 'only long-named option' },
     { def: '--default-value <v>', type: 'integer', default: 50, description: 'has default value, if not specified' }
   ]
@@ -37,7 +39,7 @@ console.log(options.args)
 ```
 
 ```terminal
-$ node examples/example.js -r 1 -f -i 10.5 -j 3 -s foobar -t abcd -n 1 --ints 1,5,8,10,20 --patterned-ints 1,2,3 --long-name hogefuga arg1 arg2
+$ node examples/example.js -r 1 -f -i 10.5 -j 3 -s foobar -t abcd -n 1 --ints 1,5,8,10,20 --patterned-ints 1,2,3 --strings aaa,bbb,ccc --patterned-strings aaa,bbb,ccc,ddd --long-name hogefuga arg1 arg2
 --------
 required: 1
 flag: true
@@ -48,7 +50,10 @@ patternedInt: 3
 number: 1
 ints: [ 1, 5, 8, 10, 20 ]
 patternedInts: [ 1, 2, 3 ]
+strings: [ 'aaa', 'bbb', 'ccc' ]
+patternedStrings: [ 'aaa', 'bbb', 'ccc', 'ddd' ]
 longName: hogefuga
+defaultValue: 50
 showValidationSchema: undefined
 --------
 {
@@ -61,7 +66,10 @@ showValidationSchema: undefined
   number: 1,
   ints: [ 1, 5, 8, 10, 20 ],
   patternedInts: [ 1, 2, 3 ],
+  strings: [ 'aaa', 'bbb', 'ccc' ],
+  patternedStrings: [ 'aaa', 'bbb', 'ccc', 'ddd' ],
   longName: 'hogefuga',
+  defaultValue: 50,
   showValidationSchema: undefined
 }
 --------
